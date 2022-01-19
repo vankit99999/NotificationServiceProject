@@ -1,5 +1,6 @@
-package com.meesho.notificationservice;
+package com.meesho.notificationservice.controllers;
 
+import com.meesho.notificationservice.services.kafka.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/kafka")
-public class Controller {
+public class KafkaController {
     private final Producer producer;
     @Autowired
-    Controller(Producer producer) {
+    KafkaController(Producer producer) {
         this.producer=producer;
     }
     @PostMapping(value = "/publish")
