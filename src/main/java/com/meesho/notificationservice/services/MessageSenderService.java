@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MessageSenderService {
@@ -42,5 +43,13 @@ public class MessageSenderService {
 
     public List<Message> getAllMessages() {
         return messageRepository.findAll();
+    }
+
+    public Message getMessageById(Long messageId) {
+        Optional<Message> messageOptional = messageRepository.findById(messageId);
+        if (!messageOptional.isPresent()) {
+            throw new IllegalStateException("no message with this message id!!!");
+        }
+        return messageOptional.get();
     }
 }

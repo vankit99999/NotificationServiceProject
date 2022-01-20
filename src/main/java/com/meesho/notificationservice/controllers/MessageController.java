@@ -22,12 +22,13 @@ public class MessageController {
     }
 
     @PostMapping(path = "/send")
-    public void sendNewMessage(@RequestBody Message message) {
+    public String sendNewMessage(@RequestBody Message message) {
         message.setStatus(MESSAGE_SEND_INIT);
         LocalDateTime currentTime = LocalDateTime.now();
         message.setCreatedOn(currentTime);
         message.setLastUpdatedAt(currentTime);
         messageSenderService.sendNewMessage(message);
+        return "Message Send Initiated";
     }
 
 //    @PostMapping(path = "/send")
@@ -40,4 +41,10 @@ public class MessageController {
     public List<Message> getAllMessages() {
         return messageSenderService.getAllMessages();
     }
+
+    @GetMapping(path = "/{messageId}")
+    public Message getMessageById(@PathVariable("messageId") Long messageId) {
+        return messageSenderService.getMessageById(messageId);
+    }
+
 }
