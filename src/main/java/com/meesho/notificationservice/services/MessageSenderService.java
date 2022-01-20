@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class MessageService {
+public class MessageSenderService {
 
     private final MessageRepository messageRepository;
     private final Producer producer;
 
     @Autowired
-    public MessageService(MessageRepository messageRepository, Producer producer) {
+    public MessageSenderService(MessageRepository messageRepository, Producer producer) {
         this.messageRepository = messageRepository;
         this.producer = producer;
     }
