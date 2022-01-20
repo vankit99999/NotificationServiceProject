@@ -5,7 +5,10 @@ import com.meesho.notificationservice.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.meesho.notificationservice.constants.Constants.MESSAGE_SEND_INIT;
 
 @RestController
 @RequestMapping(path = "v1/sms")
@@ -19,8 +22,12 @@ public class MessageController {
     }
 
     @PostMapping(path = "/send")
-    public void registerNewMessage(@RequestBody Message message) {
-        messageService.registerNewMessage(message);
+    public void sendNewMessage(@RequestBody Message message) {
+        message.setStatus(MESSAGE_SEND_INIT);
+        LocalDateTime currentTime = LocalDateTime.now();
+        message.setCreatedOn(currentTime);
+        message.setLastUpdatedAt(currentTime);
+        messageService.sendNewMessage(message);
     }
 
 //    @PostMapping(path = "/send")

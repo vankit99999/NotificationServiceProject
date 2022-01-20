@@ -16,7 +16,6 @@ public class Message {
    private String text;
    private String phoneNumber;
    private String status;
-//   @Transient
-//   private LocalDateTime createdOn;
-//   private LocalDateTime lastUpdatedAt;
+   private LocalDateTime createdOn;
+   private LocalDateTime lastUpdatedAt;
 }

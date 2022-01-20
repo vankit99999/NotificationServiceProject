@@ -18,7 +18,7 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public void registerNewMessage(Message message) {
+    public void sendNewMessage(Message message) {
         messageRepository.save(message);
     }
 
