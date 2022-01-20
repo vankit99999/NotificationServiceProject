@@ -1,7 +1,7 @@
 package com.meesho.notificationservice.controllers;
 
 import com.meesho.notificationservice.models.Message;
-import com.meesho.notificationservice.services.MessageService;
+import com.meesho.notificationservice.services.MessageSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +14,11 @@ import static com.meesho.notificationservice.constants.Constants.MESSAGE_SEND_IN
 @RequestMapping(path = "v1/sms")
 public class MessageController {
 
-    private final MessageService messageService;
+    private final MessageSenderService messageSenderService;
 
     @Autowired
-    public MessageController(MessageService messageService) {
-        this.messageService = messageService;
+    public MessageController(MessageSenderService messageSenderService) {
+        this.messageSenderService = messageSenderService;
     }
 
     @PostMapping(path = "/send")
@@ -27,7 +27,7 @@ public class MessageController {
         LocalDateTime currentTime = LocalDateTime.now();
         message.setCreatedOn(currentTime);
         message.setLastUpdatedAt(currentTime);
-        messageService.sendNewMessage(message);
+        messageSenderService.sendNewMessage(message);
     }
 
 //    @PostMapping(path = "/send")
@@ -38,6 +38,6 @@ public class MessageController {
 
     @GetMapping(path = "/all")
     public List<Message> getAllMessages() {
-        return messageService.getAllMessages();
+        return messageSenderService.getAllMessages();
     }
 }
