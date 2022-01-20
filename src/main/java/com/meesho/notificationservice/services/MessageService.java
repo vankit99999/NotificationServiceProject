@@ -2,24 +2,27 @@ package com.meesho.notificationservice.services;
 
 import com.meesho.notificationservice.models.Message;
 import com.meesho.notificationservice.repository.MessageRepository;
+import com.meesho.notificationservice.services.kafka.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
 public class MessageService {
 
     private final MessageRepository messageRepository;
+    private final Producer producer;
 
     @Autowired
-    public MessageService(MessageRepository messageRepository) {
+    public MessageService(MessageRepository messageRepository, Producer producer) {
         this.messageRepository = messageRepository;
+        this.producer = producer;
     }
 
     public void sendNewMessage(Message message) {
         messageRepository.save(message);
+        producer.sendMessage(message.getId());
     }
 
 //    @Transactional

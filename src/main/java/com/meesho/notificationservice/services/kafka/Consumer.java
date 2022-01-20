@@ -11,8 +11,8 @@ import java.io.IOException;
 public class Consumer {
     private final Logger logger = LoggerFactory.getLogger(Producer.class);
 
-    @KafkaListener(topics = "messages2", groupId = "group_id")
-    public void consume(String message) throws IOException {
-        logger.info(String.format("#### -> Consumed message -> %s", message));
+    @KafkaListener(topics = "message_pipeline", groupId = "group_id")
+    public void consume(Long messageId) throws IOException {
+        logger.info(String.format("#### -> Consumed message -> %s", String.valueOf(messageId)));
     }
 }

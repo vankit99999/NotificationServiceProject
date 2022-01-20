@@ -16,7 +16,7 @@ public class KafkaController {
         this.producer=producer;
     }
     @PostMapping(value = "/publish")
-    public void sendMessages(@RequestParam("message") String message) {
-        this.producer.sendMessage(message);
+    public void sendMessages(@RequestParam("message") Long messageId) {
+        this.producer.sendMessage(messageId);
     }
 }
