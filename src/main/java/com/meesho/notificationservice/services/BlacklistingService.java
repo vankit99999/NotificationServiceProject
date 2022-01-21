@@ -5,6 +5,7 @@ import com.meesho.notificationservice.models.Message;
 import com.meesho.notificationservice.repository.BlacklistedRepository;
 import com.meesho.notificationservice.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,23 +23,32 @@ public class BlacklistingService {
         this.blacklistedRepository = blacklistedRepository;
     }
 
-    public void addPhoneNumberToBlacklist(BlacklistedNumber blacklistedNumber) {
-        Optional<BlacklistedNumber> phoneNumberOptional = blacklistedRepository.findPhoneNumber(blacklistedNumber.getPhoneNumber());
+    @Cacheable("messagesL1")
+    public Optional<String> isNumberPresentInBlackList(String phoneNumber) {
+        Optional<String> phoneNumberOptional = blacklistedRepository.findPhoneNumberAndReturnAsString(phoneNumber);
+        return phoneNumberOptional;
+    }
+
+    public void addPhoneNumberToBlacklist(String phoneNumber) {
+        Optional<BlacklistedNumber> phoneNumberOptional = blacklistedRepository.findPhoneNumber(phoneNumber);
         if (phoneNumberOptional.isPresent()) {
             throw new IllegalStateException("phone number already blacklisted");
         }
+        BlacklistedNumber blacklistedNumber = new BlacklistedNumber();
+        blacklistedNumber.setPhoneNumber(phoneNumber);
         blacklistedRepository.save(blacklistedNumber);
     }
+
     public List<BlacklistedNumber> getAllBlacklistedNumbers() {
         return blacklistedRepository.findAll();
     }
 
-    public void deletePhoneNumberFromList(@RequestBody BlacklistedNumber blacklistedNumber) {
-        Optional<BlacklistedNumber> phoneNumberOptional = blacklistedRepository.findPhoneNumber(blacklistedNumber.getPhoneNumber());
+    public void deleteByPhoneNumber(String phoneNumber) {
+        Optional<BlacklistedNumber> phoneNumberOptional = blacklistedRepository.findPhoneNumber(phoneNumber);
         if(!phoneNumberOptional.isPresent()) {
-            throw new IllegalStateException("phone number: "+ blacklistedNumber.getPhoneNumber() +" not present in blacklist");
+            throw new IllegalStateException("phone number: "+ phoneNumber +" not present in blacklist");
         }
         blacklistedRepository.deleteById(phoneNumberOptional.get().getId());
-//        blacklistedRepository.deletePhoneNumberByNumber(blacklistedNumber.getPhoneNumber());
     }
+
 }

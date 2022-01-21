@@ -14,7 +14,6 @@ public interface BlacklistedRepository extends JpaRepository<BlacklistedNumber,L
     @Query("SELECT s FROM BlacklistedNumber s WHERE s.phoneNumber = ?1")
     Optional<BlacklistedNumber> findPhoneNumber(String phoneNumber);
 
-    @Modifying
-    @Query("DELETE BlacklistedNumber s WHERE s.phoneNumber = ?1")
-    void deletePhoneNumberByNumber(String phoneNumber);
+    @Query("SELECT s.phoneNumber FROM BlacklistedNumber s WHERE s.phoneNumber = ?1")
+    Optional<String> findPhoneNumberAndReturnAsString(String phoneNumber);
 }

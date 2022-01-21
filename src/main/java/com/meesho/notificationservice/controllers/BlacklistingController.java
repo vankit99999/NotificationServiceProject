@@ -5,6 +5,8 @@ import com.meesho.notificationservice.models.Message;
 import com.meesho.notificationservice.services.BlacklistingService;
 import com.meesho.notificationservice.services.MessageSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,26 +25,23 @@ public class BlacklistingController {
         this.blacklistingService = blacklistingService;
     }
 
-    @PostMapping(path = "/add")
-    public String addPhoneNumberToBlacklist(@RequestBody BlacklistedNumber blacklistedNumber) {
-        blacklistingService.addPhoneNumberToBlacklist(blacklistedNumber);
-        return "Done";
+    @PostMapping(path = "/add/{phoneNumber}")
+    @CachePut(value = "messagesL1")
+    public String addPhoneNumberToBlacklist(@PathVariable String phoneNumber) {
+        blacklistingService.addPhoneNumberToBlacklist(phoneNumber);
+        return phoneNumber;
     }
-
-//    @PostMapping(path = "/send")
-//    public @ResponseBody String sendMessage(@RequestBody Message message) {
-//        messageService.updateDataBase(message);
-//        return "done";
-//    }
 
     @GetMapping(path = "/all")
     public List<BlacklistedNumber> getAllBlacklistedNumbers() {
         return blacklistingService.getAllBlacklistedNumbers();
     }
 
-    @PostMapping(path = "/delete")
-    public String deletePhoneNumberFromList(@RequestBody BlacklistedNumber blacklistedNumber) {
-        blacklistingService.deletePhoneNumberFromList(blacklistedNumber);
-        return "deleted";
+    @DeleteMapping(path = "/delete/{phoneNumber}")
+    @CacheEvict(value = "messagesL1")
+    public String deleteByPhoneNumber(@PathVariable String phoneNumber) {
+        blacklistingService.deleteByPhoneNumber(phoneNumber);
+        return phoneNumber;
     }
+
 }

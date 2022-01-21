@@ -31,12 +31,6 @@ public class MessageController {
         return "Message Send Initiated";
     }
 
-//    @PostMapping(path = "/send")
-//    public @ResponseBody String sendMessage(@RequestBody Message message) {
-//        messageService.updateDataBase(message);
-//        return "done";
-//    }
-
     @GetMapping(path = "/all")
     public List<Message> getAllMessages() {
         return messageSenderService.getAllMessages();
