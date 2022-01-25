@@ -8,6 +8,8 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
+import static com.meesho.notificationservice.constants.Constants.DATE_PATTERN;
+
 @Data
 @Document(indexName = "messagesindex5")
 public class SearchEntity {
@@ -19,8 +21,8 @@ public class SearchEntity {
     private String phoneNumber;
     @Field
     private String status;
-    @Field(type = FieldType.Date, format = {} ,pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSS")
+    @Field(type = FieldType.Date, format = {} ,pattern = DATE_PATTERN)
     private LocalDateTime createdAt;
-    @Field(type = FieldType.Date, format = {},pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSS")
+    @Field(type = FieldType.Date, format = {},pattern = DATE_PATTERN)
     private LocalDateTime lastUpdatedAt;
 }

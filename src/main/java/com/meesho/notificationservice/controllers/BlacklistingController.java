@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.meesho.notificationservice.constants.Constants.CACHE_NAME;
+
 @RestController
 @RequestMapping(path = "v1/blacklist")
 public class BlacklistingController {
@@ -21,7 +23,7 @@ public class BlacklistingController {
     }
 
     @PostMapping(path = "/add/{phoneNumber}")
-    @CachePut(value = "messagesL1")
+    @CachePut(value = CACHE_NAME)
     public String addPhoneNumberToBlacklist(@PathVariable String phoneNumber) {
         blacklistingService.addPhoneNumberToBlacklist(phoneNumber);
         return phoneNumber;
@@ -33,7 +35,7 @@ public class BlacklistingController {
     }
 
     @DeleteMapping(path = "/delete/{phoneNumber}")
-    @CacheEvict(value = "messagesL1")
+    @CacheEvict(value = CACHE_NAME)
     public String deleteByPhoneNumber(@PathVariable String phoneNumber) {
         blacklistingService.deleteByPhoneNumber(phoneNumber);
         return phoneNumber;

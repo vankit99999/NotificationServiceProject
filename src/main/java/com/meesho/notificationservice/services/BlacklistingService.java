@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.meesho.notificationservice.constants.Constants.CACHE_NAME;
+
 @Service
 public class BlacklistingService {
     private final BlacklistedRepository blacklistedRepository;
@@ -18,7 +20,7 @@ public class BlacklistingService {
         this.blacklistedRepository = blacklistedRepository;
     }
 
-    @Cacheable("messagesL1")
+    @Cacheable(CACHE_NAME)
     public Optional<String> isNumberPresentInBlackList(String phoneNumber) {
         Optional<String> phoneNumberOptional = blacklistedRepository.findPhoneNumberAndReturnAsString(phoneNumber);
         return phoneNumberOptional;

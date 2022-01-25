@@ -38,8 +38,6 @@ public class MessageReceiverService {
             searchEntity.setStatus(message.getStatus());
             searchEntity.setLastUpdatedAt(message.getLastUpdatedAt());
             searchService.createSearchIndex(searchEntity);
-            System.out.println(message);
-            System.out.println(searchEntity);
         }
         else {
             System.out.println("Cannot send message,number present in blacklist");

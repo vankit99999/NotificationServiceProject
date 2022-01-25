@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.meesho.notificationservice.constants.Constants.DATE_PATTERN;
+
 @Slf4j
 @RestController
 @RequestMapping(path = "v1/search")
@@ -27,8 +29,8 @@ public class SearchController {
                                                   @PathVariable("endTime") String endTime,
                                                   @PathVariable("page") int page,
                                                   @PathVariable("size") int size) {
-        LocalDateTime startTimeObj = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS"));
-        LocalDateTime endTimeObj = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS"));
+        LocalDateTime startTimeObj = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
+        LocalDateTime endTimeObj = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
         return searchService.findByPhoneNumberAndTime(phoneNumber,startTimeObj,endTimeObj,page,size);
     }
 
@@ -38,8 +40,8 @@ public class SearchController {
                                                      @PathVariable("endTime") String endTime,
                                                     @PathVariable("page") int page,
                                                     @PathVariable("size") int size) {
-        LocalDateTime startTimeObj = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS"));
-        LocalDateTime endTimeObj = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS"));
+        LocalDateTime startTimeObj = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
+        LocalDateTime endTimeObj = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
         return searchService.findByTextAndTime(text,startTimeObj,endTimeObj,page,size);
     }
 }

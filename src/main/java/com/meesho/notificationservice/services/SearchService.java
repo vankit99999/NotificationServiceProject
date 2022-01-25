@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.meesho.notificationservice.constants.Constants.INDEX_NAME;
+
 @Slf4j
 @Service
 public class SearchService {
@@ -33,7 +36,7 @@ public class SearchService {
 
         SearchHits<SearchEntity> searchEntitySearchHits = elasticsearchOperations.search(searchQuery,
                 SearchEntity.class,
-                IndexCoordinates.of("messagesindex5"));
+                IndexCoordinates.of(INDEX_NAME));
         List<SearchEntity> searchEntities= new ArrayList<SearchEntity>();
         searchEntitySearchHits.forEach(searchHit->{
             searchEntities.add(searchHit.getContent());
@@ -50,7 +53,7 @@ public class SearchService {
 
         SearchHits<SearchEntity> searchEntitySearchHits = elasticsearchOperations.search(searchQuery,
                         SearchEntity.class,
-                        IndexCoordinates.of("messagesindex5"));
+                        IndexCoordinates.of(INDEX_NAME));
         List<SearchEntity> searchEntities= new ArrayList<SearchEntity>();
         searchEntitySearchHits.forEach(searchHit->{
             searchEntities.add(searchHit.getContent());
@@ -64,7 +67,7 @@ public class SearchService {
                 .withObject(searchEntity).build();
 
         String documentId = elasticsearchOperations
-                .index(indexQuery, IndexCoordinates.of("messagesindex5"));
+                .index(indexQuery, IndexCoordinates.of(INDEX_NAME));
         System.out.println(documentId);
         return documentId;
     }

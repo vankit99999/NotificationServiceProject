@@ -1,9 +1,6 @@
 package com.meesho.notificationservice.models;
 
 import lombok.Data;
-import lombok.NonNull;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
