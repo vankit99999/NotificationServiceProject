@@ -11,7 +11,6 @@ import java.io.IOException;
 
 @Service
 public class Consumer {
-
     private final Logger logger = LoggerFactory.getLogger(Producer.class);
     private final MessageReceiverService messageReceiverService;
 

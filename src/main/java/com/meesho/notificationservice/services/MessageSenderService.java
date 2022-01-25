@@ -1,7 +1,7 @@
 package com.meesho.notificationservice.services;
 
 import com.meesho.notificationservice.models.Message;
-import com.meesho.notificationservice.repository.MessageRepository;
+import com.meesho.notificationservice.repositories.JPArepositories.MessageRepository;
 import com.meesho.notificationservice.services.kafka.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Service
 public class MessageSenderService {
-
     private final MessageRepository messageRepository;
     private final Producer producer;
 

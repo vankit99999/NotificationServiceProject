@@ -1,4 +1,4 @@
-package com.meesho.notificationservice.repository;
+package com.meesho.notificationservice.repositories.JPArepositories;
 
 import com.meesho.notificationservice.models.Message;
 import org.springframework.data.jpa.repository.JpaRepository;

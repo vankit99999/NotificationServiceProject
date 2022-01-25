@@ -9,15 +9,12 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
 
-import static com.meesho.notificationservice.constants.Constants.MESSAGE_SEND_INIT;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "v1/blacklist")
 public class BlacklistingController {
-
     private final BlacklistingService blacklistingService;
 
     @Autowired
@@ -43,5 +40,4 @@ public class BlacklistingController {
         blacklistingService.deleteByPhoneNumber(phoneNumber);
         return phoneNumber;
     }
-
 }

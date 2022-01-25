@@ -1,21 +1,16 @@
 package com.meesho.notificationservice.services;
 
 import com.meesho.notificationservice.models.BlacklistedNumber;
-import com.meesho.notificationservice.models.Message;
-import com.meesho.notificationservice.repository.BlacklistedRepository;
-import com.meesho.notificationservice.repository.MessageRepository;
+import com.meesho.notificationservice.repositories.JPArepositories.BlacklistedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class BlacklistingService {
-
     private final BlacklistedRepository blacklistedRepository;
 
     @Autowired
@@ -50,5 +45,4 @@ public class BlacklistingService {
         }
         blacklistedRepository.deleteById(phoneNumberOptional.get().getId());
     }
-
 }

@@ -9,10 +9,8 @@ import java.io.Serializable;
 @Data
 //@Table(name = "BlackList")
 public class BlacklistedNumber implements Serializable {
-
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String phoneNumber;
-
 }

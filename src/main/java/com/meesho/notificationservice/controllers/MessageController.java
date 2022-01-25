@@ -13,7 +13,6 @@ import static com.meesho.notificationservice.constants.Constants.MESSAGE_SEND_IN
 @RestController
 @RequestMapping(path = "v1/sms")
 public class MessageController {
-
     private final MessageSenderService messageSenderService;
 
     @Autowired
@@ -40,5 +39,4 @@ public class MessageController {
     public Message getMessageById(@PathVariable("messageId") Long messageId) {
         return messageSenderService.getMessageById(messageId);
     }
-
 }
