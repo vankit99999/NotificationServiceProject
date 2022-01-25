@@ -1,9 +1,7 @@
 package com.meesho.notificationservice.controllers;
 
 import com.meesho.notificationservice.models.BlacklistedNumber;
-import com.meesho.notificationservice.models.Message;
 import com.meesho.notificationservice.services.BlacklistingService;
-import com.meesho.notificationservice.services.MessageSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;

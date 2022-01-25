@@ -37,7 +37,6 @@ public class MessageReceiverService {
             searchEntity.setCreatedAt(message.getCreatedOn());
             searchEntity.setStatus(message.getStatus());
             searchEntity.setLastUpdatedAt(message.getLastUpdatedAt());
-//            searchService.createSearchEntityIndex(searchEntity);
             searchService.createSearchIndex(searchEntity);
             System.out.println(message);
             System.out.println(searchEntity);

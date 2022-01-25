@@ -7,7 +7,6 @@ import java.io.Serializable;
 
 @Entity
 @Data
-//@Table(name = "BlackList")
 public class BlacklistedNumber implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
