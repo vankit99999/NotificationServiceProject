@@ -6,7 +6,11 @@ import com.meesho.notificationservice.repositories.JPArepositories.MessageReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static com.meesho.notificationservice.constants.Constants.MESSAGE_SEND_FAILED;
+import static com.meesho.notificationservice.constants.Constants.MESSAGE_SEND_SUCCESS;
 
 @Service
 public class MessageReceiverService {
@@ -31,6 +35,9 @@ public class MessageReceiverService {
         Optional<String> checkBlacklist = blacklistingService.isNumberPresentInBlackList(message.getPhoneNumber());
         if(!checkBlacklist.isPresent()) {
             System.out.println("Number not present in blacklist,init 3rd party API");
+            message.setLastUpdatedAt(LocalDateTime.now());
+            message.setStatus(MESSAGE_SEND_SUCCESS);
+            messageRepository.save(message);
             SearchEntity searchEntity = new SearchEntity();
             searchEntity.setText(message.getText());
             searchEntity.setPhoneNumber(message.getPhoneNumber());
@@ -41,6 +48,9 @@ public class MessageReceiverService {
         }
         else {
             System.out.println("Cannot send message,number present in blacklist");
+            message.setStatus(MESSAGE_SEND_FAILED);
+            message.setLastUpdatedAt(LocalDateTime.now());
+            messageRepository.save(message);
         }
     }
 }

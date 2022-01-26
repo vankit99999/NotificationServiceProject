@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+import static com.meesho.notificationservice.constants.Constants.KAFKA_TOPIC_NAME;
+
 @Service
 public class Consumer {
     private final Logger logger = LoggerFactory.getLogger(Producer.class);
@@ -19,7 +21,7 @@ public class Consumer {
         this.messageReceiverService = messageReceiverService;
     }
 
-    @KafkaListener(topics = "message_pipeline", groupId = "group_id")
+    @KafkaListener(topics = KAFKA_TOPIC_NAME, groupId = "group_id")
     public void consume(Long messageId) throws IOException {
         logger.info(String.format("#### -> Consumed message -> %s", String.valueOf(messageId)));
         messageReceiverService.queryDatabaseById(messageId);

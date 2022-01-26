@@ -43,6 +43,7 @@ public class SearchService {
         });
         return searchEntities;
     }
+
     public List<SearchEntity> findByTextAndTime(String text, LocalDateTime startTime, LocalDateTime endTime,int page,int size) {
         Criteria timeCriteria = new Criteria("lastUpdatedAt")
                 .greaterThanEqual(startTime)
@@ -60,6 +61,7 @@ public class SearchService {
         });
         return searchEntities;
     }
+
     public String createSearchIndex(SearchEntity searchEntity) {
 
         IndexQuery indexQuery = new IndexQueryBuilder()
