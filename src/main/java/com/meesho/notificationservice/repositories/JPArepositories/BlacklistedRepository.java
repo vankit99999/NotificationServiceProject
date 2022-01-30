@@ -9,9 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface BlacklistedRepository extends JpaRepository<BlacklistedNumber,Long> {
-    @Query("SELECT s FROM BlacklistedNumber s WHERE s.phoneNumber = ?1")
-    Optional<BlacklistedNumber> findPhoneNumber(String phoneNumber);
-
-    @Query("SELECT s.phoneNumber FROM BlacklistedNumber s WHERE s.phoneNumber = ?1")
-    Optional<String> findPhoneNumberAndReturnAsString(String phoneNumber);
+    @Query("SELECT s.id FROM BlacklistedNumber s WHERE s.phoneNumber = ?1")
+    Optional<Long> findPhoneNumberAndReturnID(String phoneNumber);
 }

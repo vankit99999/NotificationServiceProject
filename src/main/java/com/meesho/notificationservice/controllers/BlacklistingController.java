@@ -3,21 +3,17 @@ package com.meesho.notificationservice.controllers;
 import com.meesho.notificationservice.models.BlacklistedNumber;
 import com.meesho.notificationservice.services.BlacklistingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
-
-import static com.meesho.notificationservice.constants.Constants.CACHE_NAME;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "v1/blacklist")
-@Validated
 public class BlacklistingController {
     private final BlacklistingService blacklistingService;
 
@@ -27,28 +23,52 @@ public class BlacklistingController {
     }
 
     @PostMapping(path = "/add/{phoneNumber}")
-    @CachePut(value = CACHE_NAME)
-    public String addPhoneNumberToBlacklist(
-            @PathVariable
-            @Size(min=10,max=10,message = "phone number must be of 10 characters")
-            String phoneNumber) {
-//        if(errors.hasErrors()) {
-//            System.out.println(errors.getAllErrors());
-//            return errors.toString();
-//        }
+    public ResponseEntity<String> addPhoneNumberToBlacklist(@PathVariable String phoneNumber) {
+        Long phoneNumberLong;
+        try {
+            phoneNumberLong = Long.parseLong(phoneNumber);
+        }catch (NumberFormatException n) {
+            throw new IllegalArgumentException("mobile number invalid");
+        }
+        if(phoneNumber.length()!=10)
+        {
+            throw new IllegalArgumentException("phone number must be of 10 characters");
+        }
+        Optional<Long> checkBlackList = blacklistingService.isNumberPresentInBlackList(phoneNumber);
+        if(checkBlackList.isPresent())
+            throw new IllegalArgumentException("phone number already blacklisted");
         blacklistingService.addPhoneNumberToBlacklist(phoneNumber);
-        return phoneNumber;
+        return new ResponseEntity<>(phoneNumber, HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/all")
-    public List<BlacklistedNumber> getAllBlacklistedNumbers() {
-        return blacklistingService.getAllBlacklistedNumbers();
+    public ResponseEntity<List<String>> getAllBlacklistedNumbers() {
+        List<BlacklistedNumber> blacklistedNumbersList=blacklistingService.getAllBlacklistedNumbers();
+        if (blacklistedNumbersList.isEmpty())
+            throw new NoSuchElementException("No numbers blacklisted");
+        List<String> phoneNumbers = new ArrayList<>();
+        for(BlacklistedNumber blacklistedNumber:blacklistedNumbersList) {
+            phoneNumbers.add(blacklistedNumber.getPhoneNumber());
+        }
+        return new ResponseEntity<>(phoneNumbers, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/delete/{phoneNumber}")
-    @CacheEvict(value = CACHE_NAME)
-    public String deleteByPhoneNumber(@PathVariable String phoneNumber) {
-        blacklistingService.deleteByPhoneNumber(phoneNumber);
-        return phoneNumber;
+    public ResponseEntity<String> deleteByPhoneNumber(@PathVariable String phoneNumber) {
+        Long phoneNumberLong;
+        try {
+            phoneNumberLong = Long.parseLong(phoneNumber);
+        }catch (NumberFormatException n) {
+            throw new IllegalArgumentException("mobile number invalid");
+        }
+        if(phoneNumber.length()!=10)
+        {
+            throw new IllegalArgumentException("phone number must be of 10 characters");
+        }
+        Optional<Long> checkBlackList = blacklistingService.isNumberPresentInBlackList(phoneNumber);
+        if(!checkBlackList.isPresent())
+            throw new IllegalArgumentException("phone number not present in blacklist");
+        blacklistingService.deleteByPhoneNumber(phoneNumber,checkBlackList.get());
+        return new ResponseEntity<>(phoneNumber, HttpStatus.OK);
     }
 }

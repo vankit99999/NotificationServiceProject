@@ -32,7 +32,7 @@ public class MessageReceiverService {
         }
         Message message = messageRepository.findById(messageId).orElseThrow(()->new IllegalStateException("message with id "+ messageId +" does not exist"));
         System.out.println(message);
-        Optional<String> checkBlacklist = blacklistingService.isNumberPresentInBlackList(message.getPhoneNumber());
+        Optional<Long> checkBlacklist = blacklistingService.isNumberPresentInBlackList(message.getPhoneNumber());
         if(!checkBlacklist.isPresent()) {
             System.out.println("Number not present in blacklist,init 3rd party API");
             message.setLastUpdatedAt(LocalDateTime.now());

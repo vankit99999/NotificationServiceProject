@@ -5,7 +5,6 @@ import com.meesho.notificationservice.repositories.JPArepositories.MessageReposi
 import com.meesho.notificationservice.services.kafka.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,11 +30,7 @@ public class MessageSenderService {
     }
 
     public Optional<Message> getMessageById(Long messageId) {
-//        Message message=messageRepository.getById(messageId).orEls
         Optional<Message> messageOptional = messageRepository.findById(messageId);
-//        if (!messageOptional.isPresent()) {
-//            throw new IllegalStateException("no message with this message id!!!");
-//        }
         return messageOptional;
     }
 }
