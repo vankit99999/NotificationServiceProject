@@ -24,6 +24,6 @@ public class Consumer {
     @KafkaListener(topics = KAFKA_TOPIC_NAME, groupId = "group_id")
     public void consume(Long messageId) throws IOException {
         logger.info(String.format("#### -> Consumed message -> %s", String.valueOf(messageId)));
-        messageReceiverService.queryDatabaseById(messageId);
+        messageReceiverService.performConsumerEndServices(messageId);
     }
 }

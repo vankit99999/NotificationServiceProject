@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class RESTConsumerService {
 
-    public RESTResponse sendRequest(String phoneNumber,String text) {
+    public ResponseEntity<RESTResponse> sendRequest(String phoneNumber,String text) {
         RESTRequest restRequest = new RESTRequest("sms",new Channels(new Sms(text)),
                 Arrays.asList(new Destination(Arrays.asList("+91"+phoneNumber))));
         System.out.println(restRequest);
@@ -27,6 +27,6 @@ public class RESTConsumerService {
         ResponseEntity<RESTResponse> restResponseResponseEntity = restTemplate.exchange(resourceUrl,
                 HttpMethod.POST,httpEntity,RESTResponse.class);
         System.out.println(restResponseResponseEntity);
-        return restResponseResponseEntity.getBody();
+        return restResponseResponseEntity;
     }
 }

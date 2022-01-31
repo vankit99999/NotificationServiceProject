@@ -47,7 +47,7 @@ public class MessageController {
         Long messageIdLong;
         try {
             messageIdLong = Long.parseLong(messageId);
-        }catch (NumberFormatException n) {
+        }catch (Exception n) {
             throw new IllegalArgumentException("Only integer id allowed");
         }
         if(messageIdLong<1)

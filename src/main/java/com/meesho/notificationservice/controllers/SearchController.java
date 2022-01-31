@@ -2,17 +2,21 @@ package com.meesho.notificationservice.controllers;
 
 import com.meesho.notificationservice.models.SearchEntity;
 import com.meesho.notificationservice.services.SearchService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.ParseException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static com.meesho.notificationservice.constants.Constants.DATE_PATTERN;
 
-@Slf4j
 @RestController
 @RequestMapping(path = "v1/search")
 public class SearchController {
@@ -24,24 +28,66 @@ public class SearchController {
     }
 
     @GetMapping(path = "/phoneNumber={phoneNumber}/startTime={startTime}/endTime={endTime}/page={page}/size={size}")
-    public List<SearchEntity> searchByPhoneNumberAndTime(@PathVariable("phoneNumber") String phoneNumber,
+    public ResponseEntity<List<SearchEntity>> searchByPhoneNumberAndTime(@PathVariable("phoneNumber") String phoneNumber,
                                                   @PathVariable("startTime") String startTime,
                                                   @PathVariable("endTime") String endTime,
-                                                  @PathVariable("page") int page,
-                                                  @PathVariable("size") int size) {
-        LocalDateTime startTimeObj = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
-        LocalDateTime endTimeObj = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
-        return searchService.findByPhoneNumberAndTime(phoneNumber,startTimeObj,endTimeObj,page,size);
+                                                  @PathVariable("page") String page,
+                                                  @PathVariable("size") String size) {
+        Long phoneNumberLong;
+        int pageInt,sizeInt;
+        try {
+            phoneNumberLong = Long.parseLong(phoneNumber);
+            pageInt = Integer.parseInt(page);
+            sizeInt = Integer.parseInt(size);
+        }catch (NumberFormatException n) {
+            throw new IllegalArgumentException("invalid phone number,page number or page size!!!");
+        }
+        if(phoneNumber.length()!=10 || pageInt<0 || sizeInt<0)
+        {
+            throw new IllegalArgumentException("invalid phone number,page number or page size!!!");
+        }
+        LocalDateTime startTimeObj,endTimeObj;
+        try {
+            startTimeObj = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
+            endTimeObj = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
+        }catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("invalid time format, please follow the format: "+DATE_PATTERN);
+        }
+        List<SearchEntity> searchEntities = searchService.findByPhoneNumberAndTime(phoneNumber,startTimeObj,endTimeObj,
+                pageInt,sizeInt);
+        if (searchEntities.isEmpty())
+            throw new NoSuchElementException("No messages found");
+        return new ResponseEntity<>(searchEntities, HttpStatus.OK);
     }
 
     @GetMapping(path = "/text={text}/startTime={startTime}/endTime={endTime}/page={page}/size={size}")
-    public List<SearchEntity> searchByTextAndTime(@PathVariable("text") String text,
+    public ResponseEntity<List<SearchEntity>> searchByTextAndTime(@PathVariable("text") String text,
                                                      @PathVariable("startTime") String startTime,
                                                      @PathVariable("endTime") String endTime,
-                                                    @PathVariable("page") int page,
-                                                    @PathVariable("size") int size) {
-        LocalDateTime startTimeObj = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
-        LocalDateTime endTimeObj = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
-        return searchService.findByTextAndTime(text,startTimeObj,endTimeObj,page,size);
+                                                    @PathVariable("page") String page,
+                                                    @PathVariable("size") String size) {
+        int pageInt,sizeInt;
+        try {
+            pageInt = Integer.parseInt(page);
+            sizeInt = Integer.parseInt(size);
+        }catch (NumberFormatException n) {
+            throw new IllegalArgumentException("invalid page number or page size!!!");
+        }
+        if(pageInt<0 || sizeInt<0)
+        {
+            throw new IllegalArgumentException("invalid page number or page size!!!");
+        }
+        LocalDateTime startTimeObj,endTimeObj;
+        try {
+            startTimeObj = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
+            endTimeObj = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
+        }catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("invalid time format, please follow the format: "+DATE_PATTERN);
+        }
+        List<SearchEntity> searchEntities = searchService.findByTextAndTime(text,startTimeObj,endTimeObj,
+                pageInt,sizeInt);
+        if (searchEntities.isEmpty())
+            throw new NoSuchElementException("No messages found");
+        return new ResponseEntity<>(searchEntities, HttpStatus.OK);
     }
 }

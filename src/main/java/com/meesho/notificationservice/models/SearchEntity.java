@@ -28,11 +28,11 @@ public class SearchEntity {
     private LocalDateTime lastUpdatedAt;
 
     @Autowired
-    public SearchEntity(String text, String phoneNumber, String status, LocalDateTime createdOn, LocalDateTime lastUpdatedAt) {
+    public SearchEntity(String text, String phoneNumber, String status, LocalDateTime createdAt, LocalDateTime lastUpdatedAt) {
         this.text=text;
         this.phoneNumber=phoneNumber;
         this.status=status;
-        this.createdAt=createdOn;
+        this.createdAt=createdAt;
         this.lastUpdatedAt=lastUpdatedAt;
     }
 }
