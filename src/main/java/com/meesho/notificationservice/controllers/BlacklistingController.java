@@ -38,7 +38,7 @@ public class BlacklistingController {
         if(checkBlackList.isPresent())
             throw new IllegalArgumentException("phone number already blacklisted");
         blacklistingService.addPhoneNumberToBlacklist(phoneNumber);
-        return new ResponseEntity<>(phoneNumber, HttpStatus.CREATED);
+        return new ResponseEntity<>(phoneNumber+" added to blacklist", HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/all")
@@ -69,6 +69,6 @@ public class BlacklistingController {
         if(!checkBlackList.isPresent())
             throw new IllegalArgumentException("phone number not present in blacklist");
         blacklistingService.deleteByPhoneNumber(phoneNumber,checkBlackList.get());
-        return new ResponseEntity<>(phoneNumber, HttpStatus.OK);
+        return new ResponseEntity<>(phoneNumber+" deleted from blacklist", HttpStatus.OK);
     }
 }

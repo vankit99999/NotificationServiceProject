@@ -1,6 +1,7 @@
 package com.meesho.notificationservice.models;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -25,4 +26,13 @@ public class SearchEntity {
     private LocalDateTime createdAt;
     @Field(type = FieldType.Date, format = {},pattern = DATE_PATTERN)
     private LocalDateTime lastUpdatedAt;
+
+    @Autowired
+    public SearchEntity(String text, String phoneNumber, String status, LocalDateTime createdOn, LocalDateTime lastUpdatedAt) {
+        this.text=text;
+        this.phoneNumber=phoneNumber;
+        this.status=status;
+        this.createdAt=createdOn;
+        this.lastUpdatedAt=lastUpdatedAt;
+    }
 }
