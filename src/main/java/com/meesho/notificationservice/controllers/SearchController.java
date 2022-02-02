@@ -2,6 +2,7 @@ package com.meesho.notificationservice.controllers;
 
 import com.meesho.notificationservice.models.SearchEntity;
 import com.meesho.notificationservice.services.SearchService;
+import com.meesho.notificationservice.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,26 +32,11 @@ public class SearchController {
                                                   @PathVariable("endTime") String endTime,
                                                   @PathVariable("page") String page,
                                                   @PathVariable("size") String size) {
-        Long phoneNumberLong;
-        int pageInt,sizeInt;
-        try {
-            phoneNumberLong = Long.parseLong(phoneNumber);
-            pageInt = Integer.parseInt(page);
-            sizeInt = Integer.parseInt(size);
-        }catch (NumberFormatException n) {
-            throw new IllegalArgumentException("invalid phone number,page number or page size!!!");
-        }
-        if(phoneNumber.length()!=10 || pageInt<0 || sizeInt<0)
-        {
-            throw new IllegalArgumentException("invalid phone number,page number or page size!!!");
-        }
-        LocalDateTime startTimeObj,endTimeObj;
-        try {
-            startTimeObj = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
-            endTimeObj = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
-        }catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("invalid time format, please follow the format: "+DATE_PATTERN);
-        }
+        int pageInt = Validator.intValidator(page,0,"page-number");
+        int sizeInt = Validator.intValidator(size,1,"page-size");
+        Validator.phoneNumberValidator(phoneNumber,"phone-number");
+        LocalDateTime startTimeObj = Validator.localDateTimeValidator(startTime,"start-time");
+        LocalDateTime endTimeObj = Validator.localDateTimeValidator(endTime,"end-time");
         if(endTimeObj.isBefore(startTimeObj))
             throw new IllegalArgumentException("start date must be before end time");
         List<SearchEntity> searchEntities = searchService.findByPhoneNumberAndTime(phoneNumber,startTimeObj,endTimeObj,
@@ -66,24 +52,11 @@ public class SearchController {
                                                      @PathVariable("endTime") String endTime,
                                                     @PathVariable("page") String page,
                                                     @PathVariable("size") String size) {
-        int pageInt,sizeInt;
-        try {
-            pageInt = Integer.parseInt(page);
-            sizeInt = Integer.parseInt(size);
-        }catch (NumberFormatException n) {
-            throw new IllegalArgumentException("invalid page number or page size!!!");
-        }
-        if(pageInt<0 || sizeInt<0)
-        {
-            throw new IllegalArgumentException("invalid page number or page size!!!");
-        }
-        LocalDateTime startTimeObj,endTimeObj;
-        try {
-            startTimeObj = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
-            endTimeObj = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern(DATE_PATTERN));
-        }catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("invalid time format, please follow the format: "+DATE_PATTERN);
-        }
+
+        int pageInt = Validator.intValidator(page,0,"page-number");
+        int sizeInt = Validator.intValidator(size,1,"page-size");
+        LocalDateTime startTimeObj = Validator.localDateTimeValidator(startTime,"start-time");
+        LocalDateTime endTimeObj = Validator.localDateTimeValidator(endTime,"end-time");
         if(endTimeObj.isBefore(startTimeObj))
             throw new IllegalArgumentException("start date must be before end time");
         List<SearchEntity> searchEntities = searchService.findByTextAndTime(text,startTimeObj,endTimeObj,

@@ -2,6 +2,7 @@ package com.meesho.notificationservice.controllers;
 
 import com.meesho.notificationservice.models.BlacklistedNumber;
 import com.meesho.notificationservice.services.BlacklistingService;
+import com.meesho.notificationservice.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,16 +25,7 @@ public class BlacklistingController {
 
     @PostMapping(path = "/add/{phoneNumber}")
     public ResponseEntity<String> addPhoneNumberToBlacklist(@PathVariable String phoneNumber) {
-        Long phoneNumberLong;
-        try {
-            phoneNumberLong = Long.parseLong(phoneNumber);
-        }catch (NumberFormatException n) {
-            throw new IllegalArgumentException("mobile number invalid");
-        }
-        if(phoneNumber.length()!=10)
-        {
-            throw new IllegalArgumentException("phone number must be of 10 characters");
-        }
+        Validator.phoneNumberValidator(phoneNumber,"phone-number");
         Optional<Long> checkBlackList = blacklistingService.isNumberPresentInBlackList(phoneNumber);
         if(checkBlackList.isPresent())
             throw new IllegalArgumentException("phone number already blacklisted");
@@ -55,16 +47,7 @@ public class BlacklistingController {
 
     @DeleteMapping(path = "/delete/{phoneNumber}")
     public ResponseEntity<String> deleteByPhoneNumber(@PathVariable String phoneNumber) {
-        Long phoneNumberLong;
-        try {
-            phoneNumberLong = Long.parseLong(phoneNumber);
-        }catch (NumberFormatException n) {
-            throw new IllegalArgumentException("mobile number invalid");
-        }
-        if(phoneNumber.length()!=10)
-        {
-            throw new IllegalArgumentException("phone number must be of 10 characters");
-        }
+        Validator.phoneNumberValidator(phoneNumber,"phone-number");
         Optional<Long> checkBlackList = blacklistingService.isNumberPresentInBlackList(phoneNumber);
         if(!checkBlackList.isPresent())
             throw new IllegalArgumentException("phone number not present in blacklist");
