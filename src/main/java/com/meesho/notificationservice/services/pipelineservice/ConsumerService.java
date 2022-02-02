@@ -1,4 +1,4 @@
-package com.meesho.notificationservice.services.kafka;
+package com.meesho.notificationservice.services.pipelineservice;
 
 import com.meesho.notificationservice.services.MessageReceiverService;
 import org.slf4j.Logger;
@@ -10,20 +10,21 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 import static com.meesho.notificationservice.constants.Constants.KAFKA_TOPIC_NAME;
+import static com.meesho.notificationservice.constants.Constants.LOGGER_NAME;
 
 @Service
-public class Consumer {
-    private final Logger logger = LoggerFactory.getLogger(Producer.class);
+public class ConsumerService {
+    private final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
     private final MessageReceiverService messageReceiverService;
 
     @Autowired
-    public Consumer(MessageReceiverService messageReceiverService) {
+    public ConsumerService(MessageReceiverService messageReceiverService) {
         this.messageReceiverService = messageReceiverService;
     }
 
     @KafkaListener(topics = KAFKA_TOPIC_NAME, groupId = "group_id")
     public void consume(Long messageId) throws IOException {
-        logger.info(String.format("#### -> Consumed message -> %s", String.valueOf(messageId)));
+        logger.info(String.format("Received message id on consumer side from pipeline-> %s", String.valueOf(messageId)));
         messageReceiverService.performConsumerEndServices(messageId);
     }
 }

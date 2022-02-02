@@ -7,5 +7,6 @@ public class Constants {
     public static final String CACHE_NAME="messagesL1";
     public static final String INDEX_NAME="messagesindex5";
     public static final String KAFKA_TOPIC_NAME="message_pipeline";
+    public static final String LOGGER_NAME="TERMINAL_APPENDER";
     public static final String MESSAGE_SEND_FAILED_REST_EXCEPTION="MESSAGE_SENDING_FAILED_REST_EXCEPTION";
 }

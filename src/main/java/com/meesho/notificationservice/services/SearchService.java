@@ -2,6 +2,8 @@ package com.meesho.notificationservice.services;
 
 import com.meesho.notificationservice.models.SearchEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -15,11 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.meesho.notificationservice.constants.Constants.INDEX_NAME;
+import static com.meesho.notificationservice.constants.Constants.LOGGER_NAME;
 
 @Slf4j
 @Service
 public class SearchService {
     private final ElasticsearchOperations elasticsearchOperations;
+    private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
     @Autowired
     public SearchService(ElasticsearchOperations elasticsearchOperations) {
@@ -63,14 +67,12 @@ public class SearchService {
     }
 
     public String createSearchIndex(SearchEntity searchEntity) {
-
         IndexQuery indexQuery = new IndexQueryBuilder()
                 .withId(searchEntity.getId())
                 .withObject(searchEntity).build();
-
         String documentId = elasticsearchOperations
                 .index(indexQuery, IndexCoordinates.of(INDEX_NAME));
-        System.out.println(documentId);
+        logger.info(String.format("message %s indexed to index table ",searchEntity));
         return documentId;
     }
 }

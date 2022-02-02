@@ -3,12 +3,10 @@ package com.meesho.notificationservice.controllers;
 import com.meesho.notificationservice.models.SearchEntity;
 import com.meesho.notificationservice.services.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -53,6 +51,8 @@ public class SearchController {
         }catch (DateTimeParseException e) {
             throw new IllegalArgumentException("invalid time format, please follow the format: "+DATE_PATTERN);
         }
+        if(endTimeObj.isBefore(startTimeObj))
+            throw new IllegalArgumentException("start date must be before end time");
         List<SearchEntity> searchEntities = searchService.findByPhoneNumberAndTime(phoneNumber,startTimeObj,endTimeObj,
                 pageInt,sizeInt);
         if (searchEntities.isEmpty())
@@ -84,6 +84,8 @@ public class SearchController {
         }catch (DateTimeParseException e) {
             throw new IllegalArgumentException("invalid time format, please follow the format: "+DATE_PATTERN);
         }
+        if(endTimeObj.isBefore(startTimeObj))
+            throw new IllegalArgumentException("start date must be before end time");
         List<SearchEntity> searchEntities = searchService.findByTextAndTime(text,startTimeObj,endTimeObj,
                 pageInt,sizeInt);
         if (searchEntities.isEmpty())

@@ -4,6 +4,8 @@ import com.meesho.notificationservice.models.RESTEntities.RESTResponse;
 import com.meesho.notificationservice.models.SearchEntity;
 import com.meesho.notificationservice.models.Message;
 import com.meesho.notificationservice.repositories.JPArepositories.MessageRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class MessageReceiverService {
     private final BlacklistingService blacklistingService;
     private final SearchService searchService;
     private final RESTConsumerService restConsumerService;
+    private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
     @Autowired
     public MessageReceiverService(MessageRepository messageRepository, BlacklistingService blacklistingService,
@@ -54,17 +57,17 @@ public class MessageReceiverService {
     public void performConsumerEndServices(Long messageId) {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(()->new IllegalStateException("message with id "+ messageId +" does not exist"));
-        System.out.println(message);
+        logger.info(String.format("retrieved message on consumer side -> %s", String.valueOf(message)));
         Optional<Long> checkBlacklist = blacklistingService.isNumberPresentInBlackList(message.getPhoneNumber());
         if(!checkBlacklist.isPresent()) {
-            System.out.println("Number not present in blacklist,init 3rd party API");
+            logger.info("number not present in blacklist,initialising 3rd party API");
             RESTResponse restResponse = connectTo3rdPartyAPI(message);
             if(restResponse != null && restResponse.getResponse().get(0).getCode().equals("1001")) {
                 addIndexToIndexTable(message);
             }
         }
         else {
-            System.out.println("Cannot send message,number present in blacklist");
+            logger.info("Cannot send message,number present in blacklist");
             message.setStatus(MESSAGE_SEND_FAILED_BLACKLISTED_NUMBER);
             message.setLastUpdatedAt(LocalDateTime.now());
             messageRepository.save(message);
