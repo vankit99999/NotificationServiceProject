@@ -4,6 +4,8 @@ import com.meesho.notificationservice.models.RESTEntities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,10 +18,20 @@ import static com.meesho.notificationservice.constants.Constants.LOGGER_NAME;
 public class RESTConsumerService {
     private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
+    private ClientHttpRequestFactory getClientHttpRequestFactory() {
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
+                = new HttpComponentsClientHttpRequestFactory();
+        int connectTimeout = 5000;
+        int readTimeout = 5000;
+        clientHttpRequestFactory.setConnectTimeout(connectTimeout);
+        clientHttpRequestFactory.setReadTimeout(readTimeout);
+        return clientHttpRequestFactory;
+    }
+
     public ResponseEntity<RESTResponse> sendRequest(String phoneNumber,String text) {
         RESTRequest restRequest = new RESTRequest("sms",new Channels(new Sms(text)),
                 Arrays.asList(new Destination(Arrays.asList("+91"+phoneNumber))));
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
         String resourceUrl = "https://api.imiconnect.in/resources/v1/messaging";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);

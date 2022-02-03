@@ -31,7 +31,7 @@ public class MessageReceiverService {
         this.searchService = searchService;
         this.restConsumerService = restConsumerService;
     }
-    public RESTResponse connectTo3rdPartyAPI(Message message) {
+    private RESTResponse connectTo3rdPartyAPI(Message message) {
         try {
             ResponseEntity<RESTResponse> restResponseResponseEntity = restConsumerService.sendRequest(
                     message.getPhoneNumber(),
@@ -48,7 +48,7 @@ public class MessageReceiverService {
         }
     }
 
-    public void addIndexToIndexTable(Message message) {
+    private void addIndexToIndexTable(Message message) {
         SearchEntity searchEntity = new SearchEntity(message.getText(),message.getPhoneNumber(),
                 message.getStatus(),message.getCreatedOn(),message.getLastUpdatedAt());
         searchService.createSearchIndex(searchEntity);
