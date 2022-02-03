@@ -2,14 +2,14 @@ package com.meesho.notificationservice.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.Date;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ErrorResponse {
     private int statusCode;
-    private Date timestamp;
+    private String exceptionType;
     private String message;
     private String description;
 }

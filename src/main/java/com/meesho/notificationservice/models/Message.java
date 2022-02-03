@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -16,8 +17,7 @@ public class Message {
    private Long id;
    @NotBlank(message = "text field cannot be empty")
    private String text;
-   @NotNull
-   @Size(min=10,max=10,message = "phone number must be of 10 characters")
+   @Pattern(regexp="[6-9][0-9]{9}",message = "phone number must be of 10 digits,1st digit must be in range-[6,9]")
    private String phoneNumber;
    private String status;
    private LocalDateTime createdOn;

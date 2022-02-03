@@ -2,13 +2,14 @@ package com.meesho.notificationservice.controllers;
 
 import com.meesho.notificationservice.models.Message;
 import com.meesho.notificationservice.services.MessageSenderService;
-import com.meesho.notificationservice.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,6 +18,7 @@ import static com.meesho.notificationservice.constants.Constants.MESSAGE_SEND_IN
 
 @RestController
 @RequestMapping(path = "v1/sms")
+@Validated
 public class MessageController {
     private final MessageSenderService messageSenderService;
 
@@ -44,11 +46,9 @@ public class MessageController {
     }
 
     @GetMapping(path = "/{messageId}")
-    public ResponseEntity<Message> getMessageById(@PathVariable("messageId") String messageId) {
-        Long messageIdLong = Validator.longValidator(messageId,1L,"message-id");
-        Message message = messageSenderService.getMessageById(messageIdLong)
-                .orElseThrow(() -> new NoSuchElementException("No message with id: "+messageIdLong ));
+    public ResponseEntity<Message> getMessageById(@PathVariable("messageId") @Min(1) Long messageId) {
+        Message message = messageSenderService.getMessageById(messageId)
+                .orElseThrow(() -> new NoSuchElementException("No message with id: "+messageId));
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
-
 }
