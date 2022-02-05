@@ -1,6 +1,7 @@
 package com.meesho.notificationservice.controllers;
 
 import com.meesho.notificationservice.models.Message;
+import com.meesho.notificationservice.models.SuccessResponse;
 import com.meesho.notificationservice.services.MessageSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,27 +29,27 @@ public class MessageController {
     }
 
     @PostMapping(path = "/send")
-    public ResponseEntity<Message> sendNewMessage(@Valid @RequestBody Message message) {
+    public ResponseEntity<SuccessResponse> sendNewMessage(@Valid @RequestBody Message message) {
         message.setStatus(MESSAGE_SEND_INIT);
         LocalDateTime currentTime = LocalDateTime.now();
         message.setCreatedOn(currentTime);
         message.setLastUpdatedAt(currentTime);
         messageSenderService.sendNewMessage(message);
-        return new ResponseEntity<>(message, HttpStatus.CREATED);
+        return new ResponseEntity<>(new SuccessResponse(message,"success"), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/all")
-    public ResponseEntity<List<Message>> getAllMessages() {
+    public ResponseEntity<SuccessResponse> getAllMessages() {
         List<Message> messageList=messageSenderService.getAllMessages();
         if (messageList.isEmpty())
             throw new NoSuchElementException("No messages found");
-        return new ResponseEntity<>(messageList, HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse(messageList,"success"), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{messageId}")
-    public ResponseEntity<Message> getMessageById(@PathVariable("messageId") @Min(1) Long messageId) {
+    public ResponseEntity<SuccessResponse> getMessageById(@PathVariable("messageId") @Min(1) Long messageId) {
         Message message = messageSenderService.getMessageById(messageId)
                 .orElseThrow(() -> new NoSuchElementException("No message with id: "+messageId));
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse(message,"success"), HttpStatus.OK);
     }
 }

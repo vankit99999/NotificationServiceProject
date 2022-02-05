@@ -1,6 +1,7 @@
 package com.meesho.notificationservice.controllers;
 
 import com.meesho.notificationservice.models.SearchEntity;
+import com.meesho.notificationservice.models.SuccessResponse;
 import com.meesho.notificationservice.services.SearchService;
 import com.meesho.notificationservice.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class SearchController {
     }
 
     @GetMapping(path = "/phoneNumber={phoneNumber}/startTime={startTime}/endTime={endTime}/page={page}/size={size}")
-    public ResponseEntity<List<SearchEntity>> searchByPhoneNumberAndTime(
+    public ResponseEntity<SuccessResponse> searchByPhoneNumberAndTime(
             @PathVariable
             @Pattern(regexp="[6-9][0-9]{9}",
             message = "phone number must be of 10 digits,1st digit must be in range-[6,9]") String phoneNumber,
@@ -43,11 +44,11 @@ public class SearchController {
                 page,size);
         if (searchEntities.isEmpty())
             throw new NoSuchElementException("No messages found");
-        return new ResponseEntity<>(searchEntities, HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse(searchEntities,"success"), HttpStatus.OK);
     }
 
     @GetMapping(path = "/text={text}/startTime={startTime}/endTime={endTime}/page={page}/size={size}")
-    public ResponseEntity<List<SearchEntity>> searchByTextAndTime(@PathVariable("text") String text,
+    public ResponseEntity<SuccessResponse> searchByTextAndTime(@PathVariable("text") String text,
                                                                   @PathVariable("startTime") String startTime,
                                                                   @PathVariable("endTime") String endTime,
                                                                   @PathVariable("page") @Min(0) int page,
@@ -61,6 +62,6 @@ public class SearchController {
                 page,size);
         if (searchEntities.isEmpty())
             throw new NoSuchElementException("No messages found");
-        return new ResponseEntity<>(searchEntities, HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse(searchEntities,"success"), HttpStatus.OK);
     }
 }
