@@ -26,7 +26,7 @@ public class BlacklistingService {
         this.blacklistedRepository = blacklistedRepository;
     }
 
-    @Cacheable(value = CACHE_NAME,key = "#phoneNumber",unless="#result==null")
+    @Cacheable(value = CACHE_NAME,key = "#phoneNumber")
     public Optional<Long> isNumberPresentInBlackList(String phoneNumber) {
         Optional<Long> phoneNumberID = blacklistedRepository.findPhoneNumberAndReturnID(phoneNumber);
         return phoneNumberID;
@@ -48,6 +48,7 @@ public class BlacklistingService {
     @CacheEvict(value = CACHE_NAME, key = "#phoneNumber")
     public Long deleteByPhoneNumber(String phoneNumber,Long id) {
         blacklistedRepository.deleteById(id);
+        logger.info(String.format("removed from blacklist -> %s", phoneNumber));
         return id;
     }
 }
