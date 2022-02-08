@@ -14,13 +14,9 @@ import static com.meesho.notificationservice.constants.Constants.LOGGER_NAME;
 
 @Service
 public class ConsumerService {
-    private final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
-    private final MessageReceiverService messageReceiverService;
-
     @Autowired
-    public ConsumerService(MessageReceiverService messageReceiverService) {
-        this.messageReceiverService = messageReceiverService;
-    }
+    private MessageReceiverService messageReceiverService;
+    private final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
     @KafkaListener(topics = KAFKA_TOPIC_NAME, groupId = "group_id")
     public void consume(Long messageId) throws IOException {

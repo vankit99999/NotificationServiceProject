@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+//IMI Response
 public class RESTRequest {
     private String deliverychannel;
     private Channels channels;

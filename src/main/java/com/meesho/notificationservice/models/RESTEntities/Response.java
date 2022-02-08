@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+//change to IMIResponse
 public class Response {
     private String code;
     private String transid;

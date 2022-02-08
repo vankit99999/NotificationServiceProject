@@ -1,9 +1,8 @@
 package com.meesho.notificationservice.services;
 
 import com.meesho.notificationservice.models.RESTEntities.RESTResponse;
-import com.meesho.notificationservice.models.SearchEntity;
 import com.meesho.notificationservice.models.Message;
-import com.meesho.notificationservice.repositories.JPArepositories.MessageRepository;
+import com.meesho.notificationservice.repositories.MessageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,42 +16,15 @@ import static com.meesho.notificationservice.constants.Constants.*;
 
 @Service
 public class MessageReceiverService {
-    private final MessageRepository messageRepository;
-    private final BlacklistingService blacklistingService;
-    private final SearchService searchService;
-    private final RESTConsumerService restConsumerService;
-    private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
-
     @Autowired
-    public MessageReceiverService(MessageRepository messageRepository, BlacklistingService blacklistingService,
-                                  SearchService searchService, RESTConsumerService restConsumerService) {
-        this.messageRepository = messageRepository;
-        this.blacklistingService = blacklistingService;
-        this.searchService = searchService;
-        this.restConsumerService = restConsumerService;
-    }
-    private RESTResponse connectTo3rdPartyAPI(Message message) {
-        try {
-            ResponseEntity<RESTResponse> restResponseResponseEntity = restConsumerService.sendRequest(
-                    message.getPhoneNumber(),
-                    message.getText());
-            message.setLastUpdatedAt(LocalDateTime.now());
-            message.setStatus(restResponseResponseEntity.getBody().getResponse().get(0).getDescription());
-            messageRepository.save(message);
-            return restResponseResponseEntity.getBody();
-        }catch (Exception e) {
-            message.setLastUpdatedAt(LocalDateTime.now());
-            message.setStatus(MESSAGE_SEND_FAILED_REST_EXCEPTION);
-            messageRepository.save(message);
-            return null;
-        }
-    }
-
-    private void addIndexToIndexTable(Message message) {
-        SearchEntity searchEntity = new SearchEntity(message.getText(),message.getPhoneNumber(),
-                message.getStatus(),message.getCreatedOn(),message.getLastUpdatedAt());
-        searchService.createSearchIndex(searchEntity);
-    }
+    private MessageRepository messageRepository;
+    @Autowired
+    private BlacklistingService blacklistingService;
+    @Autowired
+    private SearchService searchService;
+    @Autowired
+    private RESTConsumerService restConsumerService;
+    private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
     public void performConsumerEndServices(Long messageId) {
         Message message = messageRepository.findById(messageId)
@@ -61,14 +33,24 @@ public class MessageReceiverService {
         Optional<Long> checkBlacklist = blacklistingService.isNumberPresentInBlackList(message.getPhoneNumber());
         if(!checkBlacklist.isPresent()) {
             logger.info("number not present in blacklist,initialising 3rd party API");
-            RESTResponse restResponse = connectTo3rdPartyAPI(message);
-            if(restResponse != null && restResponse.getResponse().get(0).getCode().equals("1001")) {
-                addIndexToIndexTable(message);
+            try {
+                ResponseEntity<RESTResponse> restResponseResponseEntity = restConsumerService.sendRequest(message);
+                message.setLastUpdatedAt(LocalDateTime.now());
+                message.setStatus(restResponseResponseEntity.getBody().getResponse().get(0).getDescription());
+                messageRepository.save(message);
+                if(restResponseResponseEntity.getBody().getResponse().get(0).getCode()
+                        .equals("1001")) {
+                    searchService.createSearchIndex(message);
+                }
+            }catch (Exception e) {
+                message.setLastUpdatedAt(LocalDateTime.now());
+                message.setStatus(MESSAGE_SEND_FAILED_REST_EXCEPTION);
+                messageRepository.save(message);
             }
         }
         else {
             logger.info("Cannot send message,number present in blacklist");
-            message.setStatus(MESSAGE_SEND_FAILED_BLACKLISTED_NUMBER);
+            message.setStatus(MESSAGE_SENDING_FAILED_PHONE_NUMBER_BLACKLISTED);
             message.setLastUpdatedAt(LocalDateTime.now());
             messageRepository.save(message);
         }

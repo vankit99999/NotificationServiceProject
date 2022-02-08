@@ -1,7 +1,7 @@
 package com.meesho.notificationservice.services;
 
 import com.meesho.notificationservice.models.BlacklistedNumber;
-import com.meesho.notificationservice.repositories.JPArepositories.BlacklistedRepository;
+import com.meesho.notificationservice.repositories.BlacklistedRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +18,9 @@ import static com.meesho.notificationservice.constants.Constants.LOGGER_NAME;
 
 @Service
 public class BlacklistingService {
-    private final BlacklistedRepository blacklistedRepository;
-    private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
-
     @Autowired
-    public BlacklistingService(BlacklistedRepository blacklistedRepository) {
-        this.blacklistedRepository = blacklistedRepository;
-    }
+    private BlacklistedRepository blacklistedRepository;
+    private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
     @Cacheable(value = CACHE_NAME,key = "#phoneNumber")
     public Optional<Long> isNumberPresentInBlackList(String phoneNumber) {

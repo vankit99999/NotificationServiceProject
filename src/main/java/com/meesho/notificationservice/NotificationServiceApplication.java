@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableCaching
-@EnableJpaRepositories("com.meesho.notificationservice.repositories.JPArepositories")
+@EnableJpaRepositories("com.meesho.notificationservice.repositories")
 public class NotificationServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(NotificationServiceApplication.class, args);

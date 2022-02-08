@@ -1,5 +1,6 @@
 package com.meesho.notificationservice.services;
 
+import com.meesho.notificationservice.models.Message;
 import com.meesho.notificationservice.models.RESTEntities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +29,9 @@ public class RESTConsumerService {
         return clientHttpRequestFactory;
     }
 
-    public ResponseEntity<RESTResponse> sendRequest(String phoneNumber,String text) {
-        RESTRequest restRequest = new RESTRequest("sms",new Channels(new Sms(text)),
-                Arrays.asList(new Destination(Arrays.asList("+91"+phoneNumber))));
+    public ResponseEntity<RESTResponse> sendRequest(Message message) {
+        RESTRequest restRequest = new RESTRequest("sms",new Channels(new Sms(message.getText())),
+                Arrays.asList(new Destination(Arrays.asList("+91"+message.getPhoneNumber()))));
         RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
         String resourceUrl = "https://api.imiconnect.in/resources/v1/messaging";
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -40,7 +41,8 @@ public class RESTConsumerService {
         HttpEntity<RESTRequest> httpEntity = new HttpEntity<RESTRequest>(restRequest,httpHeaders);
         ResponseEntity<RESTResponse> restResponseResponseEntity = restTemplate.exchange(resourceUrl,
                 HttpMethod.POST,httpEntity,RESTResponse.class);
-        logger.info(String.format("message %s successfully sent to %s via 3rd party API",text,phoneNumber));
+        logger.info(String.format("message %s successfully sent to %s via 3rd party API",message.getText(),
+                message.getPhoneNumber()));
         return restResponseResponseEntity;
     }
 }

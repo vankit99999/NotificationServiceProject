@@ -26,6 +26,7 @@ public class BlacklistingController {
         this.blacklistingService = blacklistingService;
     }
 
+    //put business logic to service
     @PostMapping(path = "/add/{phoneNumber}")
     public ResponseEntity<SuccessResponse> addPhoneNumberToBlacklist(
         @PathVariable

@@ -20,12 +20,8 @@ import java.util.NoSuchElementException;
 @RequestMapping(path = "v1/search")
 @Validated
 public class SearchController {
-    private final SearchService searchService;
-
     @Autowired
-    public SearchController(SearchService searchService) {
-        this.searchService = searchService;
-    }
+    private SearchService searchService;
 
     @GetMapping(path = "/phoneNumber={phoneNumber}/startTime={startTime}/endTime={endTime}/page={page}/size={size}")
     public ResponseEntity<SuccessResponse> searchByPhoneNumberAndTime(

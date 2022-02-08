@@ -11,10 +11,9 @@ import static com.meesho.notificationservice.constants.Constants.LOGGER_NAME;
 
 @Service
 public class ProducerService {
-    private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
-
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
     public void sendMessage(Long messageId) {
         logger.info(String.format("sending message id from producer side to pipeline -> %s", messageId));
