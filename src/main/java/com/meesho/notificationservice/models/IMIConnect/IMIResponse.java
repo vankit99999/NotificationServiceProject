@@ -1,4 +1,4 @@
-package com.meesho.notificationservice.models.RESTEntities;
+package com.meesho.notificationservice.models.IMIConnect;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RESTResponse  {
+public class IMIResponse {
     private List<Response> response;
 }

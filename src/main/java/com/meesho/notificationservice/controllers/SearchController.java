@@ -1,18 +1,17 @@
 package com.meesho.notificationservice.controllers;
 
-import com.meesho.notificationservice.models.SearchEntity;
-import com.meesho.notificationservice.models.SuccessResponse;
+import com.meesho.notificationservice.models.ElasticSearch.SearchEntity;
+import com.meesho.notificationservice.models.ControllerSuccessResponse;
+import com.meesho.notificationservice.models.ElasticSearch.SearchMessagesByPhoneNumberAndTimeRequest;
+import com.meesho.notificationservice.models.ElasticSearch.SearchMessagesByTextAndTimeRequest;
 import com.meesho.notificationservice.services.SearchService;
-import com.meesho.notificationservice.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
-import java.time.LocalDateTime;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -23,41 +22,28 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
-    @GetMapping(path = "/phoneNumber={phoneNumber}/startTime={startTime}/endTime={endTime}/page={page}/size={size}")
-    public ResponseEntity<SuccessResponse> searchByPhoneNumberAndTime(
-            @PathVariable
-            @Pattern(regexp="[6-9][0-9]{9}",
-            message = "phone number must be of 10 digits,1st digit must be in range-[6,9]") String phoneNumber,
-            @PathVariable("startTime") String startTime,
-            @PathVariable("endTime") String endTime,
-            @PathVariable("page") @Min(0) int page,
-            @PathVariable("size") @Min(1) int size) {
-        LocalDateTime startTimeObj = Validator.localDateTimeValidator(startTime,"start-time");
-        LocalDateTime endTimeObj = Validator.localDateTimeValidator(endTime,"end-time");
-        if(endTimeObj.isBefore(startTimeObj))
+    @GetMapping(path = "/byPhoneNumberAndTime")
+    public ResponseEntity<ControllerSuccessResponse> searchByPhoneNumberAndTime(
+            @Valid @RequestBody SearchMessagesByPhoneNumberAndTimeRequest searchMessagesByPhoneNumberAndTimeRequest) {
+        if(searchMessagesByPhoneNumberAndTimeRequest.getEndTime().isBefore(
+                searchMessagesByPhoneNumberAndTimeRequest.getStartTime()))
             throw new IllegalArgumentException("start time must be before end time");
-        List<SearchEntity> searchEntities = searchService.findByPhoneNumberAndTime(phoneNumber,startTimeObj,endTimeObj,
-                page,size);
+        List<SearchEntity> searchEntities = searchService.findByPhoneNumberAndTime(searchMessagesByPhoneNumberAndTimeRequest);
         if (searchEntities.isEmpty())
             throw new NoSuchElementException("No messages found");
-        return new ResponseEntity<>(new SuccessResponse(searchEntities,"success"), HttpStatus.OK);
+        return new ResponseEntity<>(new ControllerSuccessResponse(
+                searchEntities,"successfully fetched all messages with given constraints"), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/text={text}/startTime={startTime}/endTime={endTime}/page={page}/size={size}")
-    public ResponseEntity<SuccessResponse> searchByTextAndTime(@PathVariable("text") String text,
-                                                                  @PathVariable("startTime") String startTime,
-                                                                  @PathVariable("endTime") String endTime,
-                                                                  @PathVariable("page") @Min(0) int page,
-                                                                  @PathVariable("size") @Min(1) int size) {
-
-        LocalDateTime startTimeObj = Validator.localDateTimeValidator(startTime,"start-time");
-        LocalDateTime endTimeObj = Validator.localDateTimeValidator(endTime,"end-time");
-        if(endTimeObj.isBefore(startTimeObj))
+    @GetMapping(path = "/byTextAndTime")
+    public ResponseEntity<ControllerSuccessResponse> searchByTextAndTime(
+            @Valid @RequestBody SearchMessagesByTextAndTimeRequest searchMessagesByTextAndTimeRequest) {
+        if(searchMessagesByTextAndTimeRequest.getEndTime().isBefore(searchMessagesByTextAndTimeRequest.getStartTime()))
             throw new IllegalArgumentException("start time must be before end time");
-        List<SearchEntity> searchEntities = searchService.findByTextAndTime(text,startTimeObj,endTimeObj,
-                page,size);
+        List<SearchEntity> searchEntities = searchService.findByTextAndTime(searchMessagesByTextAndTimeRequest);
         if (searchEntities.isEmpty())
             throw new NoSuchElementException("No messages found");
-        return new ResponseEntity<>(new SuccessResponse(searchEntities,"success"), HttpStatus.OK);
+        return new ResponseEntity<>(new ControllerSuccessResponse(
+                searchEntities,"successfully fetched all messages with given constraints"), HttpStatus.OK);
     }
 }

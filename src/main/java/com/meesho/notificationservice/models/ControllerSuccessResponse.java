@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SuccessResponse {
+public class ControllerSuccessResponse {
     private Object data;
     private String message;
 }

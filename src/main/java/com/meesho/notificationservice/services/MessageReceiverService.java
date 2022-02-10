@@ -1,7 +1,7 @@
 package com.meesho.notificationservice.services;
 
-import com.meesho.notificationservice.models.RESTEntities.RESTResponse;
-import com.meesho.notificationservice.models.Message;
+import com.meesho.notificationservice.models.IMIConnect.IMIResponse;
+import com.meesho.notificationservice.models.SMS.Message;
 import com.meesho.notificationservice.repositories.MessageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,25 +18,33 @@ import static com.meesho.notificationservice.constants.Constants.*;
 public class MessageReceiverService {
     @Autowired
     private MessageRepository messageRepository;
+
     @Autowired
-    private BlacklistingService blacklistingService;
+    private BlacklistingNumberService blacklistingNumberService;
+
     @Autowired
     private SearchService searchService;
+
     @Autowired
-    private RESTConsumerService restConsumerService;
+    private IMIConnectService IMIConnectService;
+
     private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
-    public void performConsumerEndServices(Long messageId) {
+    public void initiateServicesOnConsumerEnd(Long messageId) {
+        performConsumerEndServices(messageId);
+    }
+
+    private void performConsumerEndServices(Long messageId) {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(()->new IllegalStateException("message with id "+ messageId +" does not exist"));
         logger.info(String.format("retrieved message on consumer side -> %s", String.valueOf(message)));
-        Optional<Long> checkBlacklist = blacklistingService.isNumberPresentInBlackList(message.getPhoneNumber());
+        Optional<Long> checkBlacklist = blacklistingNumberService.isNumberPresentInBlackList(message.getPhoneNumber());
         if(!checkBlacklist.isPresent()) {
             logger.info("number not present in blacklist,initialising 3rd party API");
             try {
-                ResponseEntity<RESTResponse> restResponseResponseEntity = restConsumerService.sendRequest(message);
+                ResponseEntity<IMIResponse> restResponseResponseEntity = IMIConnectService.sendRequest(message);
                 message.setLastUpdatedAt(LocalDateTime.now());
-                message.setStatus(restResponseResponseEntity.getBody().getResponse().get(0).getDescription());
+                message.setStatus(MESSAGE_STATUS.MESSAGE_SENT_SUCCESSFULLY.toString());
                 messageRepository.save(message);
                 if(restResponseResponseEntity.getBody().getResponse().get(0).getCode()
                         .equals("1001")) {
@@ -44,13 +52,13 @@ public class MessageReceiverService {
                 }
             }catch (Exception e) {
                 message.setLastUpdatedAt(LocalDateTime.now());
-                message.setStatus(MESSAGE_SEND_FAILED_REST_EXCEPTION);
+                message.setStatus(MESSAGE_STATUS.MESSAGE_SENDING_FAILED_REST_EXCEPTION.toString());
                 messageRepository.save(message);
             }
         }
         else {
             logger.info("Cannot send message,number present in blacklist");
-            message.setStatus(MESSAGE_SENDING_FAILED_PHONE_NUMBER_BLACKLISTED);
+            message.setStatus(MESSAGE_STATUS.MESSAGE_SENDING_FAILED_PHONE_NUMBER_BLACKLISTED.toString());
             message.setLastUpdatedAt(LocalDateTime.now());
             messageRepository.save(message);
         }

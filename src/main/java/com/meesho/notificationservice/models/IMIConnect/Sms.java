@@ -1,4 +1,4 @@
-package com.meesho.notificationservice.models.RESTEntities;
+package com.meesho.notificationservice.models.IMIConnect;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

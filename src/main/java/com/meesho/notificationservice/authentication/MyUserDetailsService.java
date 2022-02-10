@@ -13,11 +13,12 @@ import java.util.ArrayList;
 public class MyUserDetailsService implements UserDetailsService {
     @Value("${jwt.username}")
     private String username;
+
     @Value("${jwt.password}")
     private String password;
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        return new User(username,password,new ArrayList<>());
+        return new User(username, password, new ArrayList<>());
     }
 }

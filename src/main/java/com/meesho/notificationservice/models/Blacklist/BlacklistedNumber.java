@@ -1,4 +1,4 @@
-package com.meesho.notificationservice.models;
+package com.meesho.notificationservice.models.Blacklist;
 
 import lombok.Data;
 

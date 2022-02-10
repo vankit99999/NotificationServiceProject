@@ -1,4 +1,4 @@
-package com.meesho.notificationservice.models.RESTEntities;
+package com.meesho.notificationservice.models.IMIConnect;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//change to IMIResponse
 public class Response {
     private String code;
     private String transid;

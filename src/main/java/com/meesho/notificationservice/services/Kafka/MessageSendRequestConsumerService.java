@@ -1,4 +1,4 @@
-package com.meesho.notificationservice.services.pipelineservice;
+package com.meesho.notificationservice.services.Kafka;
 
 import com.meesho.notificationservice.services.MessageReceiverService;
 import org.slf4j.Logger;
@@ -13,14 +13,15 @@ import static com.meesho.notificationservice.constants.Constants.KAFKA_TOPIC_NAM
 import static com.meesho.notificationservice.constants.Constants.LOGGER_NAME;
 
 @Service
-public class ConsumerService {
+public class MessageSendRequestConsumerService {
     @Autowired
     private MessageReceiverService messageReceiverService;
+
     private final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
     @KafkaListener(topics = KAFKA_TOPIC_NAME, groupId = "group_id")
     public void consume(Long messageId) throws IOException {
         logger.info(String.format("Received message id on consumer side from pipeline-> %s", String.valueOf(messageId)));
-        messageReceiverService.performConsumerEndServices(messageId);
+        messageReceiverService.initiateServicesOnConsumerEnd(messageId);
     }
 }

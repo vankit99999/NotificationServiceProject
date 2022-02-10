@@ -1,4 +1,4 @@
-package com.meesho.notificationservice.services.pipelineservice;
+package com.meesho.notificationservice.services.Kafka;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +10,10 @@ import static com.meesho.notificationservice.constants.Constants.KAFKA_TOPIC_NAM
 import static com.meesho.notificationservice.constants.Constants.LOGGER_NAME;
 
 @Service
-public class ProducerService {
+public class MessageSendRequestProducerService {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
+
     private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
     public void sendMessage(Long messageId) {
