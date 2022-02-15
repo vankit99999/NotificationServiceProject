@@ -18,8 +18,11 @@ import java.util.NoSuchElementException;
 @RequestMapping(path = "v1/sms")
 @Validated
 public class MessageController {
-    @Autowired
     private MessageSenderService messageSenderService;
+
+    public MessageController(MessageSenderService messageSenderService) {
+        this.messageSenderService = messageSenderService;
+    }
 
     @PostMapping(path = "/send")
     public ResponseEntity<ControllerSuccessResponse> sendNewMessage(
