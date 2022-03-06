@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -75,7 +74,7 @@ public class MessageControllerTests {
     public void getAllMessagesEmptyTest() throws Exception{
         when(messageSenderService.getAllMessages()).thenReturn(Collections.emptyList());
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/v1/sms/all"))
+                 MockMvcRequestBuilders.get("/v1/sms/all"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }

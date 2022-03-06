@@ -10,9 +10,10 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 import static com.meesho.notificationservice.constants.Constants.DATE_PATTERN;
+import static com.meesho.notificationservice.constants.Constants.INDEX_NAME;
 
 @Data
-@Document(indexName = "messagesindex5")
+@Document(indexName = INDEX_NAME)
 @Builder
 public class SearchEntity {
     @Id

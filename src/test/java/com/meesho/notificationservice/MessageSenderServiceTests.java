@@ -39,5 +39,4 @@ public class MessageSenderServiceTests {
         assertThat(message.get().getPhoneNumber()).isSameAs("9811111111");
         verify(messageRepository).findById(1L);
     }
-
 }
